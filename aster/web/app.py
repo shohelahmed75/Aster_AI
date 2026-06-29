@@ -11,7 +11,7 @@ import time
 import queue
 import logging
 from pathlib import Path
-from flask import Flask, render_template, request, jsonify, Response
+from flask import Flask, request, jsonify, Response
 
 from aster.web.bot_manager import BotManager
 

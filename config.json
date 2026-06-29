@@ -1,9 +1,9 @@
 {
+    "channel_id": "UCmjRtrdXJl-jeX8P3DAUoLw",
+    "video_id": "Ghx94S66zqc",
     "bot_prefix": "/",
     "welcome_message": "Welcome to the stream, {username} 🎉",
-    "poll_duration": 5,
     "cooldown_seconds": 5,
-    "data_dir": "data",
-    "channel_id": "UCmjRtrdXJl-jeX8P3DAUoLw",
-    "video_id": "Ghx94S66zqc"
+    "poll_duration": 5,
+    "data_dir": "data"
 }
