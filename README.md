@@ -1,4 +1,4 @@
-# Aster Bot - YouTube Live Stream Moderator
+# Aster - YouTube Live Stream Moderator
 
 Aster Bot is a Python-powered YouTube live stream moderator bot. It monitors your live chat in real-time and automates common tasks so you can focus on your content. The project features a premium, real-time React web dashboard (Aster UI) to let you control the bot, manage custom commands, launch polls, and view live logs directly from your browser.
 
