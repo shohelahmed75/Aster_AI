@@ -7,7 +7,8 @@ Usage:
     python run.py --video VIDEO_ID
 """
 
-from stryker import main
+from aster import main
 
 if __name__ == "__main__":
     main()
+

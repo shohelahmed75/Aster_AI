@@ -29,3 +29,18 @@ env/
 # OS
 Thumbs.db
 .DS_Store
+
+# Node / React Frontend
+node_modules/
+aster-ui/node_modules/
+aster-ui/dist/
+aster-ui/.env.local
+aster-ui/.env.development.local
+aster-ui/.env.test.local
+aster-ui/.env.production.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
