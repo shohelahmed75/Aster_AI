@@ -21,7 +21,7 @@ export default function App() {
   });
 
   const [commands, setCommands] = useState([]);
-  
+
   const [poll, setPoll] = useState({
     question: '',
     options: ['', ''],
@@ -31,9 +31,9 @@ export default function App() {
   const [logFilter, setLogFilter] = useState('ALL');
   const [logSearch, setLogSearch] = useState('');
   const [autoScrollLogs, setAutoScrollLogs] = useState(true);
-  
+
   const [toasts, setToasts] = useState([]);
-  
+
   const [loading, setLoading] = useState({
     status: false,
     config: false,
@@ -176,7 +176,7 @@ export default function App() {
   const saveConfig = async (e) => {
     e.preventDefault();
     setLoading(prev => ({ ...prev, config: true }));
-    
+
     const payload = {
       ...config,
       cooldown_seconds: parseInt(config.cooldown_seconds) || 5,
@@ -212,7 +212,7 @@ export default function App() {
 
   const saveCommands = async () => {
     setLoading(prev => ({ ...prev, commands: true }));
-    
+
     const processed = commands
       .filter((cmd) => cmd.action.trim())
       .map((cmd) => {
@@ -344,9 +344,7 @@ export default function App() {
       <span className="comment-label">// SYSTEM CORE</span>
       <header className="app-header">
         <div className="logo-section">
-          <span className="logo-icon">✦</span>
           <h1 className="logo-text">Aster</h1>
-          <span className="badge-version">v3.0.0</span>
         </div>
         <div className={`status-pill ${status.running ? 'running' : 'stopped'}`}>
           <div className="status-indicator" />
@@ -358,17 +356,17 @@ export default function App() {
       <span className="comment-label">// CONTROL INTERFACE</span>
       <div className="control-actions-bar">
         {status.running ? (
-          <button 
-            className="btn btn-danger" 
-            onClick={stopBot} 
+          <button
+            className="btn btn-danger"
+            onClick={stopBot}
             disabled={loading.startStop}
           >
             Stop Bot
           </button>
         ) : (
-          <button 
-            className="btn btn-primary" 
-            onClick={startBot} 
+          <button
+            className="btn btn-primary"
+            onClick={startBot}
             disabled={loading.startStop}
           >
             Start Bot
@@ -386,7 +384,7 @@ export default function App() {
           <div className="card-title">Broadcast Feed</div>
           <div className="stat-card-value">
             {status.video_id ? (
-              <span 
+              <span
                 className="video-link-copy"
                 onClick={() => copyToClipboard(status.video_id)}
                 title="Copy Video ID"
@@ -415,7 +413,7 @@ export default function App() {
 
       {/* Secondary Configurations */}
       <div className="dashboard-grid grid-2-col" style={{ marginBottom: '48px' }}>
-        
+
         {/* Config Form */}
         <div>
           <span className="comment-label">// CONFIGURATION</span>
@@ -492,8 +490,8 @@ export default function App() {
               </div>
 
               <div className="card-footer-actions">
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="btn btn-primary btn-sm"
                   disabled={loading.config}
                 >
@@ -570,7 +568,7 @@ export default function App() {
                 </tbody>
               </table>
             </div>
-            
+
             <div style={{ display: 'flex', gap: '8px' }}>
               <button className="btn btn-secondary btn-sm" onClick={addCommandRow}>
                 Add Command Row
@@ -578,8 +576,8 @@ export default function App() {
             </div>
 
             <div className="card-footer-actions">
-              <button 
-                className="btn btn-primary btn-sm" 
+              <button
+                className="btn btn-primary btn-sm"
                 onClick={saveCommands}
                 disabled={loading.commands}
               >
@@ -626,8 +624,8 @@ export default function App() {
               </div>
             ))}
           </div>
-          <button 
-            className="btn btn-secondary btn-sm" 
+          <button
+            className="btn btn-secondary btn-sm"
             onClick={handleAddPollOption}
             disabled={poll.options.length >= 4}
           >
@@ -635,8 +633,8 @@ export default function App() {
           </button>
         </div>
         <div className="card-footer-actions">
-          <button 
-            className="btn btn-success btn-sm" 
+          <button
+            className="btn btn-success btn-sm"
             onClick={launchPoll}
             disabled={loading.poll || !status.running}
             title={!status.running ? 'Start the bot first' : ''}
@@ -650,7 +648,7 @@ export default function App() {
       <span className="comment-label">// CONSOLE TELEMETRY</span>
       <div className="panel-card">
         <div className="card-title">Live Server Records</div>
-        
+
         {/* Controls */}
         <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
           <div className="filter-badge-row">
@@ -664,7 +662,7 @@ export default function App() {
               </span>
             ))}
           </div>
-          
+
           <div className="terminal-search-box">
             <input
               type="text"
@@ -675,8 +673,8 @@ export default function App() {
               placeholder="Search console logs..."
             />
             {logSearch && (
-              <button 
-                className="btn btn-secondary btn-sm" 
+              <button
+                className="btn btn-secondary btn-sm"
                 style={{ padding: '4px 8px' }}
                 onClick={() => setLogSearch('')}
               >
@@ -719,8 +717,8 @@ export default function App() {
             <button className="btn btn-secondary btn-sm" onClick={clearLogs}>
               Clear Logs
             </button>
-            <button 
-              className="btn btn-secondary btn-sm" 
+            <button
+              className="btn btn-secondary btn-sm"
               onClick={() => {
                 if (logViewerRef.current) {
                   logViewerRef.current.scrollTop = logViewerRef.current.scrollHeight;
