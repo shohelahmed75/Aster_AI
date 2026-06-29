@@ -152,10 +152,10 @@ export default function App() {
   // --- Bot Control Actions ---
   const startBot = async () => {
     setLoading(prev => ({ ...prev, startStop: true }));
-    showToast('Starting background bot loop...', 'info');
+    showToast('Starting bot...', 'info');
     const result = await apiCall('/api/bot/start', 'POST');
     if (result && result.success) {
-      showToast('Aster Bot started.', 'success');
+      showToast('Aster Bot running.', 'success');
       fetchStatus();
     }
     setLoading(prev => ({ ...prev, startStop: false }));
@@ -163,10 +163,10 @@ export default function App() {
 
   const stopBot = async () => {
     setLoading(prev => ({ ...prev, startStop: true }));
-    showToast('Stopping bot loop...', 'info');
+    showToast('Stopping bot...', 'info');
     const result = await apiCall('/api/bot/stop', 'POST');
     if (result && result.success) {
-      showToast('Aster Bot stopped.', 'success');
+      showToast('Aster Bot offline.', 'success');
       fetchStatus();
     }
     setLoading(prev => ({ ...prev, startStop: false }));
@@ -186,7 +186,7 @@ export default function App() {
 
     const result = await apiCall('/api/config', 'PUT', payload);
     if (result && result.success) {
-      showToast(result.message || 'Config parameters saved.', 'success');
+      showToast(result.message || 'Config saved.', 'success');
     }
     setLoading(prev => ({ ...prev, config: false }));
   };
@@ -300,11 +300,11 @@ export default function App() {
   // --- Logs Viewers ---
   const clearLogs = () => {
     setLogs([]);
-    showToast('Logs viewport cleared.', 'info');
+    showToast('Logs cleared.', 'info');
   };
 
   const formatUptime = (seconds) => {
-    if (!seconds) return '—';
+    if (!seconds) return '0s';
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = seconds % 60;
@@ -341,7 +341,7 @@ export default function App() {
       </div>
 
       {/* Main Branding Header */}
-      <span className="category-label">[ SYSTEM INTERFACE ]</span>
+      <span className="comment-label">// SYSTEM CORE</span>
       <header className="app-header">
         <div className="logo-section">
           <span className="logo-icon">✦</span>
@@ -355,7 +355,7 @@ export default function App() {
       </header>
 
       {/* Bot Controls */}
-      <span className="category-label">[ CONTROL MODULE ]</span>
+      <span className="comment-label">// CONTROL INTERFACE</span>
       <div className="control-actions-bar">
         {status.running ? (
           <button 
@@ -363,7 +363,7 @@ export default function App() {
             onClick={stopBot} 
             disabled={loading.startStop}
           >
-            Stop Moderator
+            Stop Bot
           </button>
         ) : (
           <button 
@@ -371,16 +371,16 @@ export default function App() {
             onClick={startBot} 
             disabled={loading.startStop}
           >
-            Start Moderator
+            Start Bot
           </button>
         )}
         <span className="system-status-msg">
-          {status.running ? `System polling active. Session uptime: ${formatUptime(status.uptime)}` : 'System standby. Click Start to launch moderation loop.'}
+          {status.running ? `Running — Session uptime: ${formatUptime(status.uptime)}` : 'Standby — Click Start to initiate live stream moderation.'}
         </span>
       </div>
 
       {/* Telemetry metrics */}
-      <span className="category-label">[ LIVE TELEMETRY ]</span>
+      <span className="comment-label">// METRICS</span>
       <div className="dashboard-grid grid-3">
         <div className="panel-card">
           <div className="card-title">Broadcast Feed</div>
@@ -414,11 +414,11 @@ export default function App() {
       </div>
 
       {/* Secondary Configurations */}
-      <div className="dashboard-grid grid-2-col" style={{ marginBottom: '40px' }}>
+      <div className="dashboard-grid grid-2-col" style={{ marginBottom: '48px' }}>
         
         {/* Config Form */}
         <div>
-          <span className="category-label">[ CONFIGURATION ]</span>
+          <span className="comment-label">// CONFIGURATION</span>
           <div className="panel-card">
             <div className="card-title">Core Parameters</div>
             <form onSubmit={saveConfig}>
@@ -497,7 +497,7 @@ export default function App() {
                   className="btn btn-primary btn-sm"
                   disabled={loading.config}
                 >
-                  Save settings
+                  Save Configuration
                 </button>
               </div>
             </form>
@@ -506,7 +506,7 @@ export default function App() {
 
         {/* Custom Commands */}
         <div>
-          <span className="category-label">[ COMMAND INTERCEPTS ]</span>
+          <span className="comment-label">// COMMAND INTERCEPTS</span>
           <div className="panel-card">
             <div className="card-title">Chat Trigger Rules</div>
             <div className="table-container">
@@ -591,8 +591,8 @@ export default function App() {
       </div>
 
       {/* Live Poll Creation */}
-      <span className="category-label">[ ENGAGEMENT MODULE ]</span>
-      <div className="panel-card" style={{ marginBottom: '40px' }}>
+      <span className="comment-label">// ENGAGEMENT MODULE</span>
+      <div className="panel-card" style={{ marginBottom: '48px' }}>
         <div className="card-title">Launch Live YouTube Poll</div>
         <div className="form-group">
           <label className="form-label">Poll Question</label>
@@ -601,7 +601,7 @@ export default function App() {
             className="input-field"
             value={poll.question}
             onChange={(e) => setPoll({ ...poll, question: e.target.value })}
-            placeholder='e.g. "Which build to try?"'
+            placeholder='e.g. "Which project next?"'
           />
         </div>
         <div className="form-group">
@@ -647,7 +647,7 @@ export default function App() {
       </div>
 
       {/* Live Logs */}
-      <span className="category-label">[ CONSOLE TELEMETRY ]</span>
+      <span className="comment-label">// CONSOLE TELEMETRY</span>
       <div className="panel-card">
         <div className="card-title">Live Server Records</div>
         
