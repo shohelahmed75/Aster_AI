@@ -105,7 +105,6 @@ export default function App() {
     setLoading(prev => ({ ...prev, commands: true }));
     const data = await apiCall('/api/commands');
     if (data) {
-      // Map command arrays from backend
       setCommands(data || []);
     }
     setLoading(prev => ({ ...prev, commands: false }));
@@ -127,14 +126,14 @@ export default function App() {
         const entry = JSON.parse(event.data);
         setLogs((prev) => {
           const updated = [...prev, entry];
-          return updated.slice(-1000); // cap at 1000 lines
+          return updated.slice(-1000);
         });
       } catch (err) {
         console.error('Failed to parse log record:', err);
       }
     };
     eventSource.onerror = () => {
-      // Will auto-reconnect
+      // Auto-reconnects
     };
 
     return () => {
@@ -150,13 +149,13 @@ export default function App() {
     }
   }, [logs, autoScrollLogs]);
 
-  // --- Bot Control actions ---
+  // --- Bot Control Actions ---
   const startBot = async () => {
     setLoading(prev => ({ ...prev, startStop: true }));
-    showToast('Starting bot...', 'info');
+    showToast('Starting background bot loop...', 'info');
     const result = await apiCall('/api/bot/start', 'POST');
     if (result && result.success) {
-      showToast('Bot started successfully!', 'success');
+      showToast('Aster Bot started.', 'success');
       fetchStatus();
     }
     setLoading(prev => ({ ...prev, startStop: false }));
@@ -164,16 +163,16 @@ export default function App() {
 
   const stopBot = async () => {
     setLoading(prev => ({ ...prev, startStop: true }));
-    showToast('Stopping bot...', 'info');
+    showToast('Stopping bot loop...', 'info');
     const result = await apiCall('/api/bot/stop', 'POST');
     if (result && result.success) {
-      showToast('Bot stopped.', 'success');
+      showToast('Aster Bot stopped.', 'success');
       fetchStatus();
     }
     setLoading(prev => ({ ...prev, startStop: false }));
   };
 
-  // --- Save Config ---
+  // --- Save Configuration ---
   const saveConfig = async (e) => {
     e.preventDefault();
     setLoading(prev => ({ ...prev, config: true }));
@@ -187,28 +186,24 @@ export default function App() {
 
     const result = await apiCall('/api/config', 'PUT', payload);
     if (result && result.success) {
-      showToast(result.message || 'Config saved. Restart bot to apply.', 'success');
+      showToast(result.message || 'Config parameters saved.', 'success');
     }
     setLoading(prev => ({ ...prev, config: false }));
   };
 
-  // --- Commands handlers ---
+  // --- Command list handlers ---
   const handleCommandChange = (index, field, value) => {
     const updated = [...commands];
-    if (field === 'aliases') {
-      updated[index][field] = value; // keep as string in raw input until save
-    } else {
-      updated[index][field] = value;
-    }
+    updated[index][field] = value;
     setCommands(updated);
   };
 
   const addCommandRow = () => {
     setCommands((prev) => [
       ...prev,
-      { action: '/new', aliases: '', reply: 'Response here', isNewRow: true }
+      { action: '/new', aliases: '', reply: 'Response content', isNewRow: true }
     ]);
-    showToast('Added empty command row.', 'info');
+    showToast('Appended command entry.', 'info');
   };
 
   const removeCommandRow = (index) => {
@@ -218,7 +213,6 @@ export default function App() {
   const saveCommands = async () => {
     setLoading(prev => ({ ...prev, commands: true }));
     
-    // Process input data: trim fields, split aliases by comma
     const processed = commands
       .filter((cmd) => cmd.action.trim())
       .map((cmd) => {
@@ -241,17 +235,17 @@ export default function App() {
 
     const result = await apiCall('/api/commands', 'PUT', processed);
     if (result && result.success) {
-      showToast(result.message || 'Commands saved & hot-reloaded!', 'success');
+      showToast(result.message || 'Commands successfully reloaded.', 'success');
       fetchCommands();
     } else {
       setLoading(prev => ({ ...prev, commands: false }));
     }
   };
 
-  // --- Poll Handlers ---
+  // --- Live Poll handlers ---
   const handleAddPollOption = () => {
     if (poll.options.length >= 4) {
-      showToast('YouTube live chat polls allow a maximum of 4 options.', 'warning');
+      showToast('Maximum of 4 options allowed.', 'warning');
       return;
     }
     setPoll((prev) => ({
@@ -262,7 +256,7 @@ export default function App() {
 
   const handleRemovePollOption = (index) => {
     if (poll.options.length <= 2) {
-      showToast('YouTube polls require at least 2 options.', 'error');
+      showToast('At least 2 options are required.', 'error');
       return;
     }
     setPoll((prev) => ({
@@ -282,11 +276,11 @@ export default function App() {
     const filledOptions = poll.options.map(o => o.trim()).filter(Boolean);
 
     if (!question) {
-      showToast('Poll question is required.', 'error');
+      showToast('Question input is blank.', 'error');
       return;
     }
     if (filledOptions.length < 2) {
-      showToast('At least 2 options are required.', 'error');
+      showToast('Provide at least 2 options.', 'error');
       return;
     }
 
@@ -297,16 +291,16 @@ export default function App() {
     });
 
     if (result && result.success) {
-      showToast(result.message || 'Poll launched!', 'success');
+      showToast(result.message || 'Poll published to chat.', 'success');
       setPoll({ question: '', options: ['', ''] });
     }
     setLoading(prev => ({ ...prev, poll: false }));
   };
 
-  // --- Log Viewer Utilities ---
+  // --- Logs Viewers ---
   const clearLogs = () => {
     setLogs([]);
-    showToast('Logs view cleared.', 'info');
+    showToast('Logs viewport cleared.', 'info');
   };
 
   const formatUptime = (seconds) => {
@@ -321,10 +315,10 @@ export default function App() {
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
-    showToast('Copied to clipboard!', 'success');
+    showToast('Value copied to clipboard.', 'success');
   };
 
-  // Filter & Search Logs
+  // Filter logs list
   const filteredLogs = logs.filter((log) => {
     if (logFilter !== 'ALL' && log.level !== logFilter) {
       return false;
@@ -337,7 +331,7 @@ export default function App() {
 
   return (
     <div className="app-container">
-      {/* Toast Notification Container */}
+      {/* Dynamic Toast stack */}
       <div className="toast-stack">
         {toasts.map((toast) => (
           <div key={toast.id} className={`toast-alert ${toast.type}`}>
@@ -346,20 +340,22 @@ export default function App() {
         ))}
       </div>
 
-      {/* Header */}
+      {/* Main Branding Header */}
+      <span className="category-label">[ SYSTEM INTERFACE ]</span>
       <header className="app-header">
         <div className="logo-section">
-          <div className="card-header-icon" style={{ marginBottom: 0 }}>☄️</div>
+          <span className="logo-icon">✦</span>
           <h1 className="logo-text">Aster</h1>
-          <span className="badge-version">v3.0 React</span>
+          <span className="badge-version">v3.0.0</span>
         </div>
         <div className={`status-pill ${status.running ? 'running' : 'stopped'}`}>
           <div className="status-indicator" />
-          <span>{status.running ? 'Running' : 'Stopped'}</span>
+          <span>{status.running ? 'Active' : 'Offline'}</span>
         </div>
       </header>
 
-      {/* Bot Control Panel */}
+      {/* Bot Controls */}
+      <span className="category-label">[ CONTROL MODULE ]</span>
       <div className="control-actions-bar">
         {status.running ? (
           <button 
@@ -367,34 +363,35 @@ export default function App() {
             onClick={stopBot} 
             disabled={loading.startStop}
           >
-            ⏹ Stop Aster Bot
+            Stop Moderator
           </button>
         ) : (
           <button 
-            className="btn btn-success" 
+            className="btn btn-primary" 
             onClick={startBot} 
             disabled={loading.startStop}
           >
-            ▶ Start Aster Bot
+            Start Moderator
           </button>
         )}
-        <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
-          {status.running ? `System Active — Uptime: ${formatUptime(status.uptime)}` : 'System Idle'}
+        <span className="system-status-msg">
+          {status.running ? `System polling active. Session uptime: ${formatUptime(status.uptime)}` : 'System standby. Click Start to launch moderation loop.'}
         </span>
       </div>
 
-      {/* Stats Counter Grid */}
+      {/* Telemetry metrics */}
+      <span className="category-label">[ LIVE TELEMETRY ]</span>
       <div className="dashboard-grid grid-3">
         <div className="panel-card">
-          <div className="card-title">🔍 Monitored Video</div>
+          <div className="card-title">Broadcast Feed</div>
           <div className="stat-card-value">
             {status.video_id ? (
               <span 
                 className="video-link-copy"
                 onClick={() => copyToClipboard(status.video_id)}
-                title="Click to copy Video ID"
+                title="Copy Video ID"
               >
-                {status.video_id} 📋
+                {status.video_id}
               </span>
             ) : (
               'Auto-Detect'
@@ -404,193 +401,199 @@ export default function App() {
         </div>
 
         <div className="panel-card">
-          <div className="card-title">👋 Welcome Tracker</div>
+          <div className="card-title">Viewers Greeted</div>
           <div className="stat-card-value highlight">{status.welcomed_count}</div>
-          <div className="stat-card-label">Viewers Welcomed</div>
+          <div className="stat-card-label">Total Welcomed</div>
         </div>
 
         <div className="panel-card">
-          <div className="card-title">⏳ Session Duration</div>
+          <div className="card-title">System Uptime</div>
           <div className="stat-card-value">{formatUptime(status.uptime)}</div>
-          <div className="stat-card-label">Uptime</div>
+          <div className="stat-card-label">Elapsed Time</div>
         </div>
       </div>
 
-      {/* Main Sections */}
-      <div className="dashboard-grid grid-2-col" style={{ marginBottom: '24px' }}>
+      {/* Secondary Configurations */}
+      <div className="dashboard-grid grid-2-col" style={{ marginBottom: '40px' }}>
         
-        {/* Configuration Panel */}
-        <div className="panel-card">
-          <div className="card-title">⚙️ Configuration</div>
-          <form onSubmit={saveConfig}>
-            <div className="form-group">
-              <label className="form-label">Channel ID</label>
-              <input
-                type="text"
-                className="input-field input-field-mono"
-                value={config.channel_id}
-                onChange={(e) => setConfig({ ...config, channel_id: e.target.value })}
-                placeholder="UCxxxxxxxxxx"
-              />
-              <div className="input-hint">YouTube channel to search for live streams</div>
-            </div>
+        {/* Config Form */}
+        <div>
+          <span className="category-label">[ CONFIGURATION ]</span>
+          <div className="panel-card">
+            <div className="card-title">Core Parameters</div>
+            <form onSubmit={saveConfig}>
+              <div className="form-group">
+                <label className="form-label">Channel ID</label>
+                <input
+                  type="text"
+                  className="input-field input-field-mono"
+                  value={config.channel_id}
+                  onChange={(e) => setConfig({ ...config, channel_id: e.target.value })}
+                  placeholder="UCxxxxxxxxxx"
+                />
+                <div className="input-hint">Target channel to search for live streams</div>
+              </div>
 
-            <div className="form-group">
-              <label className="form-label">Video ID Override</label>
-              <input
-                type="text"
-                className="input-field input-field-mono"
-                value={config.video_id}
-                onChange={(e) => setConfig({ ...config, video_id: e.target.value })}
-                placeholder="Leave empty for auto-detect"
-              />
-              <div className="input-hint">Direct video ID to monitor (takes precedence)</div>
-            </div>
+              <div className="form-group">
+                <label className="form-label">Video ID Override</label>
+                <input
+                  type="text"
+                  className="input-field input-field-mono"
+                  value={config.video_id}
+                  onChange={(e) => setConfig({ ...config, video_id: e.target.value })}
+                  placeholder="Leave empty for auto-detect"
+                />
+                <div className="input-hint">Specific stream ID (skips search)</div>
+              </div>
 
-            <div className="form-group">
-              <label className="form-label">Command Prefix</label>
-              <input
-                type="text"
-                className="input-field input-field-mono"
-                value={config.bot_prefix}
-                onChange={(e) => setConfig({ ...config, bot_prefix: e.target.value })}
-                placeholder="/"
-              />
-            </div>
+              <div className="form-group">
+                <label className="form-label">Command Prefix</label>
+                <input
+                  type="text"
+                  className="input-field input-field-mono"
+                  value={config.bot_prefix}
+                  onChange={(e) => setConfig({ ...config, bot_prefix: e.target.value })}
+                  placeholder="/"
+                />
+              </div>
 
-            <div className="form-group">
-              <label className="form-label">Welcome Message Template</label>
-              <input
-                type="text"
-                className="input-field"
-                value={config.welcome_message}
-                onChange={(e) => setConfig({ ...config, welcome_message: e.target.value })}
-                placeholder="Welcome to the stream, {username}!"
-              />
-              <div className="input-hint">Use <code>{'{username}'}</code> as the viewer's greeting placeholder</div>
-            </div>
+              <div className="form-group">
+                <label className="form-label">Welcome Text Template</label>
+                <input
+                  type="text"
+                  className="input-field"
+                  value={config.welcome_message}
+                  onChange={(e) => setConfig({ ...config, welcome_message: e.target.value })}
+                  placeholder="Welcome to the stream, {username}!"
+                />
+                <div className="input-hint">Greeting format. Use <code>{'{username}'}</code> for display name.</div>
+              </div>
 
-            <div className="form-group">
-              <label className="form-label">Command Cooldown (seconds)</label>
-              <input
-                type="number"
-                min="0"
-                className="input-field input-field-mono"
-                value={config.cooldown_seconds}
-                onChange={(e) => setConfig({ ...config, cooldown_seconds: e.target.value })}
-              />
-            </div>
+              <div className="form-group">
+                <label className="form-label">Spam Cooldown (seconds)</label>
+                <input
+                  type="number"
+                  min="0"
+                  className="input-field input-field-mono"
+                  value={config.cooldown_seconds}
+                  onChange={(e) => setConfig({ ...config, cooldown_seconds: e.target.value })}
+                />
+              </div>
 
-            <div className="form-group">
-              <label className="form-label">Poll Duration (minutes)</label>
-              <input
-                type="number"
-                min="1"
-                className="input-field input-field-mono"
-                value={config.poll_duration}
-                onChange={(e) => setConfig({ ...config, poll_duration: e.target.value })}
-              />
+              <div className="form-group">
+                <label className="form-label">Poll Active Time (minutes)</label>
+                <input
+                  type="number"
+                  min="1"
+                  className="input-field input-field-mono"
+                  value={config.poll_duration}
+                  onChange={(e) => setConfig({ ...config, poll_duration: e.target.value })}
+                />
+              </div>
+
+              <div className="card-footer-actions">
+                <button 
+                  type="submit" 
+                  className="btn btn-primary btn-sm"
+                  disabled={loading.config}
+                >
+                  Save settings
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {/* Custom Commands */}
+        <div>
+          <span className="category-label">[ COMMAND INTERCEPTS ]</span>
+          <div className="panel-card">
+            <div className="card-title">Chat Trigger Rules</div>
+            <div className="table-container">
+              <table className="commands-table">
+                <thead>
+                  <tr>
+                    <th>Command</th>
+                    <th>Aliases</th>
+                    <th>Reply message</th>
+                    <th style={{ width: '40px' }}></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {commands.map((cmd, idx) => (
+                    <tr key={idx}>
+                      <td>
+                        <input
+                          type="text"
+                          className="input-field input-field-mono"
+                          style={{ padding: '6px 8px' }}
+                          value={cmd.action}
+                          onChange={(e) => handleCommandChange(idx, 'action', e.target.value)}
+                          placeholder="/command"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          className="input-field input-field-mono"
+                          style={{ padding: '6px 8px' }}
+                          value={
+                            typeof cmd.aliases === 'string'
+                              ? cmd.aliases
+                              : (cmd.aliases || []).join(', ')
+                          }
+                          onChange={(e) => handleCommandChange(idx, 'aliases', e.target.value)}
+                          placeholder="alias1, alias2"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          className="input-field"
+                          style={{ padding: '6px 8px' }}
+                          value={cmd.reply}
+                          onChange={(e) => handleCommandChange(idx, 'reply', e.target.value)}
+                          placeholder="Response"
+                        />
+                      </td>
+                      <td>
+                        <button
+                          className="btn btn-danger-outline btn-sm"
+                          style={{ padding: '5px 8px', fontSize: '10px' }}
+                          onClick={() => removeCommandRow(idx)}
+                        >
+                          ✕
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button className="btn btn-secondary btn-sm" onClick={addCommandRow}>
+                Add Command Row
+              </button>
             </div>
 
             <div className="card-footer-actions">
               <button 
-                type="submit" 
-                className="btn btn-primary btn-sm"
-                disabled={loading.config}
+                className="btn btn-primary btn-sm" 
+                onClick={saveCommands}
+                disabled={loading.commands}
               >
-                💾 Save Configuration
+                Save & Hot-Reload
               </button>
             </div>
-          </form>
-        </div>
-
-        {/* Live Chat Command Management */}
-        <div className="panel-card">
-          <div className="card-title">🎮 Bot Commands</div>
-          <div className="table-container">
-            <table className="commands-table">
-              <thead>
-                <tr>
-                  <th>Command</th>
-                  <th>Aliases</th>
-                  <th>Reply Text</th>
-                  <th style={{ width: '50px' }}></th>
-                </tr>
-              </thead>
-              <tbody>
-                {commands.map((cmd, idx) => (
-                  <tr key={idx}>
-                    <td>
-                      <input
-                        type="text"
-                        className="input-field input-field-mono"
-                        style={{ padding: '6px 10px' }}
-                        value={cmd.action}
-                        onChange={(e) => handleCommandChange(idx, 'action', e.target.value)}
-                        placeholder="/command"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        className="input-field input-field-mono"
-                        style={{ padding: '6px 10px' }}
-                        value={
-                          typeof cmd.aliases === 'string'
-                            ? cmd.aliases
-                            : (cmd.aliases || []).join(', ')
-                        }
-                        onChange={(e) => handleCommandChange(idx, 'aliases', e.target.value)}
-                        placeholder="alias1, alias2"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        className="input-field"
-                        style={{ padding: '6px 10px' }}
-                        value={cmd.reply}
-                        onChange={(e) => handleCommandChange(idx, 'reply', e.target.value)}
-                        placeholder="Reply message"
-                      />
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-danger-outline btn-sm"
-                        style={{ padding: '6px 10px', fontSize: '11px' }}
-                        onClick={() => removeCommandRow(idx)}
-                        title="Delete Command"
-                      >
-                        ✕
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <button className="btn btn-secondary btn-sm" onClick={addCommandRow}>
-              + Add Command
-            </button>
-          </div>
-
-          <div className="card-footer-actions">
-            <button 
-              className="btn btn-primary btn-sm" 
-              onClick={saveCommands}
-              disabled={loading.commands}
-            >
-              💾 Save & Hot-Reload Commands
-            </button>
           </div>
         </div>
       </div>
 
       {/* Live Poll Creation */}
-      <div className="panel-card" style={{ marginBottom: '24px' }}>
-        <div className="card-title">📊 Launch Youtube Poll</div>
+      <span className="category-label">[ ENGAGEMENT MODULE ]</span>
+      <div className="panel-card" style={{ marginBottom: '40px' }}>
+        <div className="card-title">Launch Live YouTube Poll</div>
         <div className="form-group">
           <label className="form-label">Poll Question</label>
           <input
@@ -598,11 +601,11 @@ export default function App() {
             className="input-field"
             value={poll.question}
             onChange={(e) => setPoll({ ...poll, question: e.target.value })}
-            placeholder='e.g., "What game should I play next?"'
+            placeholder='e.g. "Which build to try?"'
           />
         </div>
         <div className="form-group">
-          <label className="form-label">Poll Options (2 to 4 options)</label>
+          <label className="form-label">Options (2 to 4)</label>
           <div className="options-list">
             {poll.options.map((option, idx) => (
               <div key={idx} className="option-row">
@@ -628,7 +631,7 @@ export default function App() {
             onClick={handleAddPollOption}
             disabled={poll.options.length >= 4}
           >
-            + Add Option
+            Add option
           </button>
         </div>
         <div className="card-footer-actions">
@@ -638,17 +641,18 @@ export default function App() {
             disabled={loading.poll || !status.running}
             title={!status.running ? 'Start the bot first' : ''}
           >
-            📊 Create Live Poll
+            Launch Poll
           </button>
         </div>
       </div>
 
-      {/* Live Logs Console */}
+      {/* Live Logs */}
+      <span className="category-label">[ CONSOLE TELEMETRY ]</span>
       <div className="panel-card">
-        <div className="card-title">📋 Live Server Logs</div>
+        <div className="card-title">Live Server Records</div>
         
-        {/* Logs controls top */}
-        <div style={{ display: 'flex', gap: '12px', marginBottom: '14px', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+        {/* Controls */}
+        <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
           <div className="filter-badge-row">
             {['ALL', 'INFO', 'WARNING', 'ERROR', 'DEBUG'].map((level) => (
               <span
@@ -665,15 +669,15 @@ export default function App() {
             <input
               type="text"
               className="input-field"
-              style={{ padding: '6px 12px', fontSize: '13px' }}
+              style={{ padding: '6px 12px', fontSize: '12px' }}
               value={logSearch}
               onChange={(e) => setLogSearch(e.target.value)}
-              placeholder="Search logs..."
+              placeholder="Search console logs..."
             />
             {logSearch && (
               <button 
                 className="btn btn-secondary btn-sm" 
-                style={{ padding: '6px 10px' }}
+                style={{ padding: '4px 8px' }}
                 onClick={() => setLogSearch('')}
               >
                 ✕
@@ -685,13 +689,13 @@ export default function App() {
         <div className="terminal-viewer" ref={logViewerRef}>
           {filteredLogs.length === 0 ? (
             <div className="terminal-empty">
-              {logs.length === 0 ? 'Terminal active. Waiting for logs...' : 'No logs match search criteria.'}
+              {logs.length === 0 ? 'Connection active. Awaiting log events...' : 'No logs matches filters.'}
             </div>
           ) : (
             filteredLogs.map((log, index) => (
               <div key={index} className={`terminal-line log-level-${log.level || 'INFO'}`}>
                 <span className="log-timestamp">[{log.time || '00:00:00'}]</span>
-                <span className="log-message">{log.message}</span>
+                <span>{log.message}</span>
               </div>
             ))
           )}
@@ -701,19 +705,19 @@ export default function App() {
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
             <input
               type="checkbox"
-              id="autoscroll-chk"
+              id="autoscroll-logs-chk"
               checked={autoScrollLogs}
               onChange={(e) => setAutoScrollLogs(e.target.checked)}
-              style={{ cursor: 'pointer', width: '15px', height: '15px' }}
+              style={{ cursor: 'pointer', width: '14px', height: '14px' }}
             />
-            <label htmlFor="autoscroll-chk" style={{ fontSize: '13px', cursor: 'pointer', userSelect: 'none', color: 'var(--text-secondary)' }}>
-              Auto-scroll logs
+            <label htmlFor="autoscroll-logs-chk" style={{ fontSize: '12px', cursor: 'pointer', color: 'var(--text-secondary)' }}>
+              Auto-scroll events
             </label>
           </div>
 
           <div style={{ display: 'flex', gap: '8px' }}>
             <button className="btn btn-secondary btn-sm" onClick={clearLogs}>
-              🗑 Clear
+              Clear Logs
             </button>
             <button 
               className="btn btn-secondary btn-sm" 
@@ -723,7 +727,7 @@ export default function App() {
                 }
               }}
             >
-              ⬇ Scroll Bottom
+              Scroll to Bottom
             </button>
           </div>
         </div>

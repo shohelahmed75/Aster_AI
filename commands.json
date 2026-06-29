@@ -1,18 +1,7 @@
 [
   {
-    "action": "/discord",
-    "aliases": [
-      "/dc"
-    ],
-    "reply": "Join our Discord: https://discord.gg/your-link"
-  },
-  {
-    "action": "/specs",
-    "aliases": [
-      "/pc",
-      "/setup",
-      "/spec"
-    ],
-    "reply": "CPU: Ryzen 7 5800X | GPU: RTX 3070 | RAM: 32GB DDR4"
+    "action": "/hi",
+    "aliases": [],
+    "reply": "Hello"
   }
 ]

@@ -1,5 +1,5 @@
 """
-Stryker Bot — YouTube Live Stream Moderator Bot.
+Aster Bot — YouTube Live Stream Moderator Bot.
 
 Usage:
     python run.py                # CLI mode
@@ -15,7 +15,7 @@ from aster.core.config import VIDEO_ID, LOG_FILE
 
 
 def main():
-    """Main entry point for Stryker Bot."""
+    """Main entry point for Aster Bot."""
     # Parse CLI arguments
     parser = argparse.ArgumentParser(description="Aster Bot — YouTube Live Moderator")
     parser.add_argument(
@@ -51,7 +51,7 @@ def main():
     # ── Classic CLI Mode ─────────────────────────────────────────────
     from aster.core.auth import get_authenticated_service
     from aster.utils.logger import setup_logging, print_banner
-    from aster.bot import StrykerBot
+    from aster.bot import AsterBot
 
     logger = setup_logging(verbose=args.verbose, log_file=LOG_FILE)
     print_banner()
@@ -72,7 +72,7 @@ def main():
     video_id = args.video or VIDEO_ID or ""
 
     # Step 3: Start the bot
-    bot = StrykerBot(youtube, video_id)
+    bot = AsterBot(youtube, video_id)
     try:
         bot.start()
     except KeyboardInterrupt:

@@ -38,7 +38,7 @@ class CommandRouter:
     def reload(self):
         """Reload commands from the JSON file."""
         self._lookup = _load_commands(self._commands_file)
-        logger.info(f"📋 Loaded {self.command_count} commands ({self.trigger_count} triggers)")
+        logger.info(f"Loaded {self.command_count} commands ({self.trigger_count} triggers)")
 
     def match(self, text):
         """
@@ -61,7 +61,7 @@ class CommandRouter:
 
         # Check cooldown
         if self._is_on_cooldown(command_word):
-            logger.debug(f"⏳ Command '{command_word}' on cooldown, skipping")
+            logger.debug(f"Command '{command_word}' on cooldown, skipping")
             return None
 
         # Record usage time
